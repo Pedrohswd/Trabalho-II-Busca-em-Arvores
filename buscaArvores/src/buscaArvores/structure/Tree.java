@@ -4,10 +4,10 @@
  */
 package buscaArvores.structure;
 
+import buscaArvores.SearchResult.SearchResult;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -221,17 +221,31 @@ public class Tree {
 
     }
 
-    public boolean search(String word) {
-        char firstLetter = word.charAt(0);
-        Node node = find(firstLetter);
-        if (node != null) {
-            for (String w : node.words) {
-                if (w.equals(word)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    public SearchResult searchAlphabetical(String word) {
+        return searchAlphabetical(root, word, new SearchResult(0, 0));
     }
 
+    private SearchResult searchAlphabetical(Tree.Node node, String word, SearchResult result) {
+        if (node == null) {
+            return result; // A palavra não foi encontrada, retorna o resultado atual
+        }
+
+        String nodeWord = node.words.first(); // Pega a primeira palavra na lista do nó
+
+        // Incrementa o contador de comparações
+        result = new SearchResult(result.getComparisons() + 1, result.getOccurrences());
+
+        int comparisonResult = word.compareTo(nodeWord);
+
+        if (comparisonResult == 0) {
+            // A palavra foi encontrada, incrementa o contador de ocorrências
+            result = new SearchResult(result.getComparisons(), result.getOccurrences() + node.words.size());
+        }
+
+        if (comparisonResult < 0) {
+            return searchAlphabetical(node.left, word, result); // Busca na subárvore esquerda
+        } else {
+            return searchAlphabetical(node.right, word, result); // Busca na subárvore direita
+        }
+    }
 }

@@ -4,11 +4,21 @@
  */
 package buscaArvores.view;
 
+import buscaArvores.SearchResult.SearchResult;
+import buscaArvores.structure.Binary;
+import buscaArvores.structure.NotTree;
 import buscaArvores.structure.Tree;
+import buscaArvores.util.QuickSort;
 import buscaArvores.util.TextFileProcessor;
 import java.io.File;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -21,6 +31,9 @@ public class vision extends javax.swing.JFrame {
      */
     public vision() {
         initComponents();
+        setLocationRelativeTo(null);
+        jTextField1.setEditable(false);
+        jTextArea2.setEditable(false);
     }
 
     /**
@@ -39,10 +52,10 @@ public class vision extends javax.swing.JFrame {
         jButtonImport = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
         jButtonGenerate = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTableOcorrencias = new javax.swing.JTable();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -70,19 +83,6 @@ public class vision extends javax.swing.JFrame {
         jTextArea2.setRows(5);
         jScrollPane3.setViewportView(jTextArea2);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
-            },
-            new String [] {
-                "Palavra", "Frequência"
-            }
-        ));
-        jScrollPane4.setViewportView(jTable2);
-
         jButtonGenerate.setText("Gerar");
         jButtonGenerate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -91,6 +91,34 @@ public class vision extends javax.swing.JFrame {
         });
 
         jButton3.setText("Visualizar Árvores");
+
+        jTableOcorrencias.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jTableOcorrencias.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Palavra", "Frequencia"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jTableOcorrencias.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jTableOcorrencias.setGridColor(new java.awt.Color(0, 0, 0));
+        jTableOcorrencias.setRowHeight(50);
+        jTableOcorrencias.setShowGrid(true);
+        jTableOcorrencias.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableOcorrenciasMouseClicked(evt);
+            }
+        });
+        jScrollPane5.setViewportView(jTableOcorrencias);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -105,15 +133,15 @@ public class vision extends javax.swing.JFrame {
                         .addComponent(jButtonImport, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonGenerate, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(277, 277, 277)
                         .addComponent(jButton3)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -126,7 +154,7 @@ public class vision extends javax.swing.JFrame {
                 .addGap(34, 34, 34)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(15, Short.MAX_VALUE))
@@ -136,9 +164,7 @@ public class vision extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 6, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -153,20 +179,129 @@ public class vision extends javax.swing.JFrame {
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fc.showOpenDialog(this);
         File arquivo = fc.getSelectedFile();
-        
-        jTextField1.setText(arquivo+ "");
+
+        jTextField1.setText(arquivo + "");
     }//GEN-LAST:event_jButtonImportActionPerformed
 
     private void jButtonGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGenerateActionPerformed
+        jTextArea2.setText("");
+        ArrayList<SearchResult> searchResults = new ArrayList<>();
         TextFileProcessor tFProcessor = new TextFileProcessor();
+        String caminho = jTextField1.getText();
+        if ("null".equals(caminho) || jTextField1.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Escolha um arquivo primeiro");
+            return;
+        }
         List<String> wordList = tFProcessor.verification(jTextField1.getText());
 
         //binária
+        String[] array = tFProcessor.listToArray(wordList);
+        QuickSort quickSort = new QuickSort();
+        quickSort.quickSort(array);
+        Binary binary = new Binary();
+        long ti, tf;
+        long ni, nf;
+        double tt, nt;
+        int comparacoes = 0;
+        Set<String> foundWords = new HashSet<>();
+        ti = System.nanoTime();
+        ni = System.nanoTime();
+        for (String word : wordList) {
+            if (!foundWords.contains(word)) {
+                SearchResult searchResult = binary.binarySearchCount(array, word);
+                comparacoes += searchResult.getComparisons();
+                searchResult.setWord(word);
+                searchResults.add(searchResult);
+                foundWords.add(word);
+            }
+        }
+        tf = System.nanoTime();
+        nf = System.nanoTime();
+        tt = (tf - ti) / 1000000000.0;
+        nt = nf - ni;
+        String segundosFormatados = String.format("%.8f", tt);
+        String milisegundosFormatados = String.format("%.2f", nt);
+        String saida = ("Busca Binária\n"
+                + " Comparações: " + comparacoes + "\n"
+                + " Segundos: " + segundosFormatados + "\n"
+                + " Milisegundos: " + milisegundosFormatados);
+        ti = 0;
+        ni = 0;
+        tf = 0;
+        nf = 0;
+
+        //arvore sem balanceamento
+        System.out.println("ARVORE SEM BALANCEAMENTO");
+        NotTree notTree = new NotTree();
+        notTree.readTxt(wordList);
+        //notTree.print();
+        comparacoes = 0;
+        foundWords = new HashSet<>();
+        ti = System.nanoTime();
+        ni = System.nanoTime();
+        for (String word : wordList) {
+            if (!foundWords.contains(word)) {
+                SearchResult searchResult = notTree.searchAlphabetical(word);
+                comparacoes += searchResult.getComparisons();
+                foundWords.add(word);
+            }
+        }
+        System.out.println("COMPARAÇÕES: " + comparacoes);
+        tf = System.nanoTime();
+        nf = System.nanoTime();
+        tt = (tf - ti) / 1000000000.0;
+        nt = nf - ni;
+        segundosFormatados = String.format("%.8f", tt);
+        milisegundosFormatados = String.format("%.2f", nt);
+        saida += ("\n\nBusca Arvore\n"
+                + " Comparações: " + comparacoes + "\n"
+                + " Segundos: " + segundosFormatados + "\n"
+                + " Milisegundos: " + milisegundosFormatados);
+        ti = 0;
+        ni = 0;
+        tf = 0;
+        nf = 0;
+
         //arvore AVL
         Tree tree = new Tree();
         tree.readTxt(wordList);
-        tree.print();
+        //tree.print();
+        comparacoes = 0;
+        foundWords = new HashSet<>();
+        ti = System.nanoTime();
+        ni = System.nanoTime();
+        for (String word : wordList) {
+            if (!foundWords.contains(word)) {
+                SearchResult searchResult = tree.searchAlphabetical(word);
+                comparacoes += searchResult.getComparisons();
+                foundWords.add(word);
+            }
+
+        }
+        System.out.println("COMPARAÇÕES: " + comparacoes);
+        tf = System.nanoTime();
+        nf = System.nanoTime();
+        tt = (tf - ti) / 1000000000.0;
+        nt = nf - ni;
+        segundosFormatados = String.format("%.8f", tt);
+        milisegundosFormatados = String.format("%.2f", nt);
+        saida += ("\n\nBusca Arvore AVL\n"
+                + " Comparações: " + comparacoes + "\n"
+                + " Segundos: " + segundosFormatados + "\n"
+                + " Milisegundos: " + milisegundosFormatados);
+        DefaultTableModel model = (DefaultTableModel) jTableOcorrencias.getModel();
+        jTextArea2.setText(saida);
+        for (SearchResult sr : searchResults) {
+            model.addRow(new Object[]{
+                sr.getWord(),
+                sr.getOccurrences()
+            });
+        }
     }//GEN-LAST:event_jButtonGenerateActionPerformed
+
+    private void jTableOcorrenciasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableOcorrenciasMouseClicked
+
+    }//GEN-LAST:event_jTableOcorrenciasMouseClicked
 
     /**
      * @param args the command line arguments
@@ -210,9 +345,9 @@ public class vision extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
+    private javax.swing.JTable jTableOcorrencias;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables

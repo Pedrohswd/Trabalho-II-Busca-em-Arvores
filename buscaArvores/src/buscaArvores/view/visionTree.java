@@ -15,6 +15,7 @@ public class visionTree extends javax.swing.JFrame {
      */
     public visionTree() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**

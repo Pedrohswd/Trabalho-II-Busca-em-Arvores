@@ -22,9 +22,9 @@ public class TextFileProcessor {
         Set<String> stopwords = loadStopwords("./src/buscaArvores/stopwords/stopwords.txt");
         List<String> wordsList = processTextFile(fileName, stopwords);
 
-        for (String word : wordsList) {
-            System.out.println(word);
-        }
+//        for (String word : wordsList) {
+//            System.out.println(word);
+//        }
         return wordsList;
     }
 
@@ -65,4 +65,16 @@ public class TextFileProcessor {
         }
         return wordsList;
     }
+
+    public static String[] listToArray(List<String> list) {
+        if (list == null) {
+            return null;
+        }
+        String[] array = new String[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            array[i] = list.get(i);
+        }
+        return array;
+    }
+
 }
