@@ -23,6 +23,7 @@ public class NotTree {
         int height;
         Node left;
         Node right;
+        String value;
         TreeSet<String> words;  // Use TreeSet for alphabetical order
 
         Node(char letter) {
@@ -50,6 +51,7 @@ public class NotTree {
             root = insert(root, letter);
             node = find(letter);
         }
+        node.value = word;
         node.words.add(word);
     }
 
