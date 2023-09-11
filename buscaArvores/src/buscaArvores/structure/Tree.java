@@ -23,11 +23,17 @@ public class Tree {
         int height;
         Node left;
         Node right;
-        TreeSet<String> words;  // Use TreeSet for alphabetical order
+        TreeSet<String> words;
+        public String getValue;
+        private String value;
 
         Node(char letter) {
             this.letter = letter;
             this.words = new TreeSet<>();  // Initialize as a TreeSet
+        }
+
+        public String getValue() {
+            return value;
         }
     }
 
@@ -50,6 +56,7 @@ public class Tree {
             root = insert(root, letter);
             node = find(letter);
         }
+        node.value = word;
         node.words.add(word);
     }
 

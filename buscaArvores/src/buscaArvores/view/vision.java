@@ -8,6 +8,7 @@ import buscaArvores.SearchResult.SearchResult;
 import buscaArvores.structure.Binary;
 import buscaArvores.structure.NotTree;
 import buscaArvores.structure.Tree;
+import buscaArvores.structure.TreePanel;
 import buscaArvores.util.QuickSort;
 import buscaArvores.util.TextFileProcessor;
 import java.io.File;
@@ -17,7 +18,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -25,6 +28,9 @@ import javax.swing.table.DefaultTableModel;
  * @author aluno
  */
 public class vision extends javax.swing.JFrame {
+
+    Tree tree = new Tree();
+    NotTree notTree = new NotTree();
 
     /**
      * Creates new form vision
@@ -91,6 +97,11 @@ public class vision extends javax.swing.JFrame {
         });
 
         jButton3.setText("Visualizar Árvores");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jTableOcorrencias.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jTableOcorrencias.setModel(new javax.swing.table.DefaultTableModel(
@@ -232,7 +243,6 @@ public class vision extends javax.swing.JFrame {
 
         //arvore sem balanceamento
         System.out.println("ARVORE SEM BALANCEAMENTO");
-        NotTree notTree = new NotTree();
         notTree.readTxt(wordList);
         //notTree.print();
         comparacoes = 0;
@@ -263,7 +273,6 @@ public class vision extends javax.swing.JFrame {
         nf = 0;
 
         //arvore AVL
-        Tree tree = new Tree();
         tree.readTxt(wordList);
         //tree.print();
         comparacoes = 0;
@@ -302,6 +311,21 @@ public class vision extends javax.swing.JFrame {
     private void jTableOcorrenciasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableOcorrenciasMouseClicked
 
     }//GEN-LAST:event_jTableOcorrenciasMouseClicked
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        visionTree viTree = new visionTree(tree, notTree);
+        viTree.setVisible(true);
+        setVisible(false);
+          SwingUtilities.invokeLater(() -> {
+            Tree.Node root = tree.getRoot();
+            TreePanel treePanel = new TreePanel(root);
+            JFrame frame = new JFrame("Árvore AVL Alfabética");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.add(treePanel);
+            frame.setSize(8000, 6000);
+            frame.setVisible(true);
+        });
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
