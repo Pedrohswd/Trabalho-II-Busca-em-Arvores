@@ -66,13 +66,24 @@ public class TextFileProcessor {
         return wordsList;
     }
 
+    public static List<String> removerPalavrasRepetidas(List<String> listaPalavras) {
+        
+        HashSet<String> palavrasUnicas = new HashSet<>(listaPalavras);
+
+
+        List<String> listaSemRepeticao = new ArrayList<>(palavrasUnicas);
+
+        return listaSemRepeticao;
+    }
+
     public static String[] listToArray(List<String> list) {
         if (list == null) {
             return null;
         }
-        String[] array = new String[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            array[i] = list.get(i);
+        List<String> lista = removerPalavrasRepetidas(list);
+        String[] array = new String[lista.size()];
+        for (int i = 0; i < lista.size(); i++) {
+            array[i] = lista.get(i);
         }
         return array;
     }

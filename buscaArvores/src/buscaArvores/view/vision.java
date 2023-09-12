@@ -12,9 +12,8 @@ import buscaArvores.structure.TreePanel;
 import buscaArvores.util.QuickSort;
 import buscaArvores.util.TextFileProcessor;
 import java.io.File;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import javax.swing.JFileChooser;
@@ -196,7 +195,7 @@ public class vision extends javax.swing.JFrame {
 
     private void jButtonGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGenerateActionPerformed
         jTextArea2.setText("");
-        ArrayList<SearchResult> searchResults = new ArrayList<>();
+        Set<SearchResult> searchResults = new HashSet<>();
         TextFileProcessor tFProcessor = new TextFileProcessor();
         String caminho = jTextField1.getText();
         if ("null".equals(caminho) || jTextField1.getText().isEmpty()) {
@@ -208,7 +207,6 @@ public class vision extends javax.swing.JFrame {
         //binária
         String[] array = tFProcessor.listToArray(wordList);
         QuickSort quickSort = new QuickSort();
-        quickSort.quickSort(array);
         Binary binary = new Binary();
         long ti, tf;
         long ni, nf;
@@ -217,13 +215,24 @@ public class vision extends javax.swing.JFrame {
         Set<String> foundWords = new HashSet<>();
         ti = System.nanoTime();
         ni = System.nanoTime();
+        quickSort.quickSort(array);
         for (String word : wordList) {
             if (!foundWords.contains(word)) {
                 SearchResult searchResult = binary.binarySearchCount(array, word);
                 comparacoes += searchResult.getComparisons();
                 searchResult.setWord(word);
+                searchResult.setOccurrences(1);
                 searchResults.add(searchResult);
                 foundWords.add(word);
+            } else {
+                Iterator<SearchResult> iterator = searchResults.iterator();
+                while (iterator.hasNext()) {
+                    SearchResult elemento = iterator.next();
+                    String compare = elemento.getWord();
+                    if (compare.equals(word)) {
+                        elemento.setOccurrences(elemento.getOccurrences() + 1);
+                    }
+                }
             }
         }
         tf = System.nanoTime();
@@ -235,7 +244,7 @@ public class vision extends javax.swing.JFrame {
         String saida = ("Busca Binária\n"
                 + " Comparações: " + comparacoes + "\n"
                 + " Segundos: " + segundosFormatados + "\n"
-                + " Milisegundos: " + milisegundosFormatados);
+                + " Nanosegundos: " + milisegundosFormatados);
         ti = 0;
         ni = 0;
         tf = 0;
@@ -243,7 +252,8 @@ public class vision extends javax.swing.JFrame {
 
         //arvore sem balanceamento
         System.out.println("ARVORE SEM BALANCEAMENTO");
-        notTree.readTxt(wordList);
+        List<String> listaArvores = tFProcessor.removerPalavrasRepetidas(wordList);
+        notTree.readTxt(listaArvores);
         //notTree.print();
         comparacoes = 0;
         foundWords = new HashSet<>();
@@ -266,15 +276,16 @@ public class vision extends javax.swing.JFrame {
         saida += ("\n\nBusca Arvore\n"
                 + " Comparações: " + comparacoes + "\n"
                 + " Segundos: " + segundosFormatados + "\n"
-                + " Milisegundos: " + milisegundosFormatados);
+                + " Nanosegundos: " + milisegundosFormatados);
         ti = 0;
         ni = 0;
         tf = 0;
         nf = 0;
 
         //arvore AVL
-        tree.readTxt(wordList);
-        //tree.print();
+        listaArvores = tFProcessor.removerPalavrasRepetidas(wordList);
+        tree.readTxt(listaArvores);
+        tree.print();
         comparacoes = 0;
         foundWords = new HashSet<>();
         ti = System.nanoTime();
@@ -285,7 +296,6 @@ public class vision extends javax.swing.JFrame {
                 comparacoes += searchResult.getComparisons();
                 foundWords.add(word);
             }
-
         }
         System.out.println("COMPARAÇÕES: " + comparacoes);
         tf = System.nanoTime();
@@ -297,9 +307,10 @@ public class vision extends javax.swing.JFrame {
         saida += ("\n\nBusca Arvore AVL\n"
                 + " Comparações: " + comparacoes + "\n"
                 + " Segundos: " + segundosFormatados + "\n"
-                + " Milisegundos: " + milisegundosFormatados);
+                + " Nanosegundos: " + milisegundosFormatados);
         DefaultTableModel model = (DefaultTableModel) jTableOcorrencias.getModel();
         jTextArea2.setText(saida);
+        model.setRowCount(0);
         for (SearchResult sr : searchResults) {
             model.addRow(new Object[]{
                 sr.getWord(),
@@ -316,14 +327,15 @@ public class vision extends javax.swing.JFrame {
         visionTree viTree = new visionTree(tree, notTree);
         viTree.setVisible(true);
         setVisible(false);
-          SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeLater(() -> {
             Tree.Node root = tree.getRoot();
             TreePanel treePanel = new TreePanel(root);
             JFrame frame = new JFrame("Árvore AVL Alfabética");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.add(treePanel);
-            frame.setSize(8000, 6000);
+            frame.setSize(1920, 1080);
             frame.setVisible(true);
+            frame.setLocationRelativeTo(null);
         });
     }//GEN-LAST:event_jButton3ActionPerformed
 

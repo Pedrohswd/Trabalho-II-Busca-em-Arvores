@@ -1,6 +1,6 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Other/File.java to edit this template
  */
 package buscaArvores.structure;
 
@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -19,50 +20,24 @@ public class NotTree {
 
     public class Node {
 
-        char letter;
+        String word;
         int height;
         Node left;
         Node right;
-        String value;
-        TreeSet<String> words;  // Use TreeSet for alphabetical order
+        TreeSet<String> words;
+        public String getValue;
+        private String value;
 
-        Node(char letter) {
-            this.letter = letter;
-            this.words = new TreeSet<>();  // Initialize as a TreeSet
+        Node(String word) {
+            this.word = word;
         }
+
     }
 
     private Node root;
 
-    public Node find(char letter) {
-        Node current = root;
-        while (current != null) {
-            if (current.letter == letter) {
-                break;
-            }
-            current = current.letter < letter ? current.right : current.left;
-        }
-        return current;
-    }
-
-    public void insert(char letter, String word) {
-        Node node = find(letter);
-        if (node == null) {
-            root = insert(root, letter);
-            node = find(letter);
-        }
-        node.value = word;
-        node.words.add(word);
-    }
-
-    public void delete(char letter, String word) {
-        Node node = find(letter);
-        if (node != null) {
-            node.words.remove(word);
-            if (node.words.isEmpty()) {
-                root = delete(root, letter);
-            }
-        }
+    public void insert(String word) {
+        root = insert(root, word);
     }
 
     public Node getRoot() {
@@ -73,46 +48,22 @@ public class NotTree {
         return root == null ? -1 : root.height;
     }
 
-    private Node insert(Node node, char letter) {
+    private Node insert(Node node, String word) {
+        TreeSet<String> words = new TreeSet<>();
         if (node == null) {
-            return new Node(letter);
-        } else if (node.letter > letter) {
-            node.left = insert(node.left, letter);
-        } else if (node.letter < letter) {
-            node.right = insert(node.right, letter);
+            return new Node(word);
+        } else {
+            words.add(word);
+            words.add(node.word);
+        }
+        if (!words.first().equals(node.word)) {
+            node.left = insert(node.left, word);
+        } else if (words.first().equals(node.word)) {
+            node.right = insert(node.right, word);
         } else {
             throw new RuntimeException("Duplicate letter!");
         }
         return node;
-    }
-
-    private Node delete(Node node, char letter) {
-        if (node == null) {
-            System.out.println("passei aqui");
-            return node;
-        } else if (node.letter > letter) {
-            node.left = delete(node.left, letter);
-        } else if (node.letter < letter) {
-            node.right = delete(node.right, letter);
-        } else {
-            if (node.left == null || node.right == null) {
-                node = (node.left == null) ? node.right : node.left;
-            } else {
-                Node mostLeftChild = mostLeftChild(node.right);
-                node.letter = mostLeftChild.letter;
-                node.right = delete(node.right, node.letter);
-            }
-        }
-        System.out.println("passei aqui");
-        return node;
-    }
-
-    private Node mostLeftChild(Node node) {
-        Node current = node;
-        while (current.left != null) {
-            current = current.left;
-        }
-        return current;
     }
 
     private void updateHeight(Node n) {
@@ -130,10 +81,7 @@ public class NotTree {
     public void printDictionary(Node node) {
         if (node != null) {
             printDictionary(node.left);
-            System.out.print(node.letter + ": ");
-            for (String word : node.words) {
-                System.out.println(word);
-            }
+            System.out.print(node.word);
             System.out.println();
             printDictionary(node.right);
         }
@@ -169,8 +117,7 @@ public class NotTree {
         int cont = 0;
         for (String word : wordsList) {
             if (!word.isEmpty()) {  // Verifica se a palavra não está vazia
-                char firstLetter = word.charAt(0);
-                insert(firstLetter, word);
+                insert(word);
                 cont++;
             }
         }
@@ -183,12 +130,12 @@ public class NotTree {
         return searchAlphabetical(root, word, new SearchResult(0, 0));
     }
 
-    private SearchResult searchAlphabetical(Node node, String word, SearchResult result) {
+    private SearchResult searchAlphabetical(NotTree.Node node, String word, SearchResult result) {
         if (node == null) {
             return result; // A palavra não foi encontrada, retorna o resultado atual
         }
 
-        String nodeWord = node.words.first(); // Pega a primeira palavra na lista do nó
+        String nodeWord = node.word; // Pega a primeira palavra na lista do nó
 
         // Incrementa o contador de comparações
         result = new SearchResult(result.getComparisons() + 1, result.getOccurrences());
@@ -196,8 +143,7 @@ public class NotTree {
         int comparisonResult = word.compareTo(nodeWord);
 
         if (comparisonResult == 0) {
-            // A palavra foi encontrada, incrementa o contador de ocorrências
-            result = new SearchResult(result.getComparisons(), result.getOccurrences() + node.words.size());
+            return result;
         }
 
         if (comparisonResult < 0) {

@@ -43,6 +43,10 @@ public class SearchResult {
         return occurrences;
     }
 
+    public void setOccurrences(int occurrences) {
+        this.occurrences = occurrences;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
