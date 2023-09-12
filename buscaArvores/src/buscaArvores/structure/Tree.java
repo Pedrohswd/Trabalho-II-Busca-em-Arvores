@@ -31,11 +31,9 @@ public class Tree {
         Node(String word) {
             this.word = word;
         }
-
     }
 
     private Node root;
-
 
     public void insert(String word) {
         root = insert(root, word);
@@ -159,7 +157,7 @@ public class Tree {
     public void readTxt(List<String> wordsList) {
         int cont = 0;
         for (String word : wordsList) {
-            if (!word.isEmpty()) {  // Verifica se a palavra não está vazia
+            if (!word.isEmpty()) { // Verifica se a palavra não está vazia
                 char firstLetter = word.charAt(0);
                 insert(word);
                 cont++;

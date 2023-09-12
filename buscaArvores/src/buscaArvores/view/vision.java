@@ -283,7 +283,6 @@ public class vision extends javax.swing.JFrame {
         nf = 0;
 
         //arvore AVL
-        listaArvores = tFProcessor.removerPalavrasRepetidas(wordList);
         tree.readTxt(listaArvores);
         tree.print();
         comparacoes = 0;

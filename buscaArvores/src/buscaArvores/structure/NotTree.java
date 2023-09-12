@@ -24,9 +24,11 @@ public class NotTree {
         int height;
         Node left;
         Node right;
+
         TreeSet<String> words;
         public String getValue;
         private String value;
+
 
         Node(String word) {
             this.word = word;

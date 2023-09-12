@@ -1,3 +1,4 @@
+
 package buscaArvores.structure;
 
 import java.awt.Font;
@@ -9,6 +10,8 @@ public class TreePanel extends JPanel {
     private Tree.Node root;
     double i = 1;
 
+
+
     public TreePanel(Tree.Node root) {
         this.root = root;
     }
@@ -18,6 +21,7 @@ public class TreePanel extends JPanel {
         super.paintComponent(g);
 
         // Use a implementação da árvore AVL para desenhar os nós e conexões da árvore.
+
         int panelWidth = getWidth(); // Largura do painel
         int panelHeight = getHeight(); // Altura do painel
 
@@ -60,6 +64,7 @@ public class TreePanel extends JPanel {
             int childWidth = width / 2;
             g.drawLine(x, y, x + childWidth, y + yOffset);
             drawTree(g, x + childWidth, y + yOffset, childWidth, fontSize, node.right);
+
         }
     }
 }
