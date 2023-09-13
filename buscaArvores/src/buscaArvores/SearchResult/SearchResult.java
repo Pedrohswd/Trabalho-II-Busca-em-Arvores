@@ -10,7 +10,7 @@ import java.util.Objects;
  *
  * @author pedro
  */
-public class SearchResult {
+public class SearchResult implements Comparable<SearchResult> {
 
     private int comparisons;
     private int occurrences;
@@ -68,4 +68,11 @@ public class SearchResult {
         final SearchResult other = (SearchResult) obj;
         return Objects.equals(this.word, other.word);
     }
+
+    @Override
+    public int compareTo(SearchResult o) {
+        // Use o método compareToIgnoreCase para comparar as palavras sem diferenciação entre maiúsculas e minúsculas
+        return this.word.compareToIgnoreCase(o.word);
+    }
+
 }
