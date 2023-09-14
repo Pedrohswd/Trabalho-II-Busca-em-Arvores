@@ -13,38 +13,40 @@ import java.util.List;
  */
 public class Binary {
 
-    public static SearchResult binarySearchCount(String[] sortedArray, String key) {
+    public static SearchResult binarySearchCount(String[] sortedArray) {
         int left = 0;
         int right = sortedArray.length - 1;
         int comparisons = 0; // Inicializa o contador de comparações
         int occurrences = 0; // Inicializa o contador de ocorrências
+        for (String key : sortedArray) {
+            
+            while (left <= right) {
+                int mid = left + (right - left) / 2;
+                int comparisonResult = key.compareTo(sortedArray[mid]);
+                comparisons++; // Incrementa o contador de comparações
 
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            int comparisonResult = key.compareTo(sortedArray[mid]);
-            comparisons++; // Incrementa o contador de comparações
+                if (comparisonResult == 0) {
+                    occurrences++; // Incrementa o contador de ocorrências
+                    // Continue a busca binária para verificar mais ocorrências
+                    int leftIndex = mid - 1;
+                    int rightIndex = mid + 1;
 
-            if (comparisonResult == 0) {
-                occurrences++; // Incrementa o contador de ocorrências
-                // Continue a busca binária para verificar mais ocorrências
-                int leftIndex = mid - 1;
-                int rightIndex = mid + 1;
+                    while (leftIndex >= 0 && sortedArray[leftIndex].equals(key)) {
+                        occurrences++;
+                        leftIndex--;
+                    }
 
-                while (leftIndex >= 0 && sortedArray[leftIndex].equals(key)) {
-                    occurrences++;
-                    leftIndex--;
+                    while (rightIndex < sortedArray.length && sortedArray[rightIndex].equals(key)) {
+                        occurrences++;
+                        rightIndex++;
+                    }
+
+                    return new SearchResult(comparisons, occurrences); // Retorna o resultado
+                } else if (comparisonResult < 0) {
+                    right = mid - 1; // A chave está à esquerda
+                } else {
+                    left = mid + 1; // A chave está à direita
                 }
-
-                while (rightIndex < sortedArray.length && sortedArray[rightIndex].equals(key)) {
-                    occurrences++;
-                    rightIndex++;
-                }
-
-                return new SearchResult(comparisons, occurrences); // Retorna o resultado
-            } else if (comparisonResult < 0) {
-                right = mid - 1; // A chave está à esquerda
-            } else {
-                left = mid + 1; // A chave está à direita
             }
         }
 

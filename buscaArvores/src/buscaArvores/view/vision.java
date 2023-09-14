@@ -215,8 +215,8 @@ public class vision extends javax.swing.JFrame {
 
     private void jButtonGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGenerateActionPerformed
         jTextArea2.setText("");
-        Comparator<SearchResult> comparator = (result1, result2) -> result1.getWord().compareToIgnoreCase(result2.getWord());
-        Set<SearchResult> searchResults = new TreeSet<>(comparator);
+        //Comparator<SearchResult> comparator = (result1, result2) -> result1.getWord().compareToIgnoreCase(result2.getWord());
+        Set<SearchResult> searchResults = new HashSet<>();
         TextFileProcessor tFProcessor = new TextFileProcessor();
         String caminho = jTextField1.getText();
         if ("null".equals(caminho) || jTextField1.getText().isEmpty()) {
@@ -226,36 +226,36 @@ public class vision extends javax.swing.JFrame {
         List<String> wordList = tFProcessor.verification(jTextField1.getText());
 
         //binária
-        String[] array = tFProcessor.listToArray(wordList);
-        QuickSort quickSort = new QuickSort();
-        Binary binary = new Binary();
+        //String[] array = tFProcessor.listToArray(wordList);
+        //QuickSort quickSort = new QuickSort();
+        //Binary binary = new Binary();
         long ti, tf;
         long ni, nf;
         double tt, nt;
-        int comparacoes = 0;
-        Set<String> foundWords = new HashSet<>();
+        long comparacoes = 0;
+        //Set<String> foundWords = new HashSet<>();
         ti = System.nanoTime();
         ni = System.nanoTime();
-        quickSort.quickSort(array);
-        for (String word : wordList) {
-            if (!foundWords.contains(word)) {
-                SearchResult searchResult = binary.binarySearchCount(array, word);
-                comparacoes += searchResult.getComparisons();
-                searchResult.setWord(word);
-                searchResult.setOccurrences(1);
-                searchResults.add(searchResult);
-                foundWords.add(word);
-            } else {
-                Iterator<SearchResult> iterator = searchResults.iterator();
-                while (iterator.hasNext()) {
-                    SearchResult elemento = iterator.next();
-                    String compare = elemento.getWord();
-                    if (compare.equals(word)) {
-                        elemento.setOccurrences(elemento.getOccurrences() + 1);
-                    }
-                }
-            }
-        }
+//      quickSort.quickSort(array);
+//        for (String word : wordList) {
+//            if (!foundWords.contains(word)) {
+//                SearchResult searchResult = binary.binarySearchCount(array, word);
+//                comparacoes += searchResult.getComparisons();
+//                searchResult.setWord(word);
+//                searchResult.setOccurrences(1);
+//                searchResults.add(searchResult);
+//                foundWords.add(word);
+//            } else {
+//                Iterator<SearchResult> iterator = searchResults.iterator();
+//                while (iterator.hasNext()) {
+//                    SearchResult elemento = iterator.next();
+//                    String compare = elemento.getWord();
+//                    if (compare.equals(word)) {
+//                        elemento.setOccurrences(elemento.getOccurrences() + 1);
+//                    }
+//                }
+//            }
+//        }
         tf = System.nanoTime();
         nf = System.nanoTime();
         tt = (tf - ti) / 1000000000.0;
@@ -273,20 +273,12 @@ public class vision extends javax.swing.JFrame {
 
         //arvore sem balanceamento
         System.out.println("ARVORE SEM BALANCEAMENTO");
-        List<String> listaArvores = tFProcessor.removerPalavrasRepetidas(wordList);
-        notTree.readTxt(listaArvores);
         //notTree.print();
         comparacoes = 0;
-        foundWords = new HashSet<>();
+        //foundWords = new HashSet<>();
         ti = System.nanoTime();
         ni = System.nanoTime();
-        for (String word : wordList) {
-            if (!foundWords.contains(word)) {
-                SearchResult searchResult = notTree.searchAlphabetical(word);
-                comparacoes += searchResult.getComparisons();
-                foundWords.add(word);
-            }
-        }
+        comparacoes = notTree.readTxt(wordList);
         System.out.println("COMPARAÇÕES: " + comparacoes);
         tf = System.nanoTime();
         nf = System.nanoTime();
@@ -304,19 +296,11 @@ public class vision extends javax.swing.JFrame {
         nf = 0;
 
         //arvore AVL
-        tree.readTxt(listaArvores);
-        //tree.print();
         comparacoes = 0;
-        foundWords = new HashSet<>();
+        //foundWords = new HashSet<>();
         ti = System.nanoTime();
         ni = System.nanoTime();
-        for (String word : wordList) {
-            if (!foundWords.contains(word)) {
-                SearchResult searchResult = tree.searchAlphabetical(word);
-                comparacoes += searchResult.getComparisons();
-                foundWords.add(word);
-            }
-        }
+        comparacoes = tree.readTxt(wordList);
         System.out.println("COMPARAÇÕES: " + comparacoes);
         tf = System.nanoTime();
         nf = System.nanoTime();
@@ -344,8 +328,6 @@ public class vision extends javax.swing.JFrame {
     }//GEN-LAST:event_jTableOcorrenciasMouseClicked
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        visionTree viTree = new visionTree(tree, notTree);
-        viTree.setVisible(true);
         setVisible(false);
         SwingUtilities.invokeLater(() -> {
             Tree.Node root = tree.getRoot();
@@ -361,8 +343,6 @@ public class vision extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        visionTree viTree = new visionTree(tree, notTree);
-        viTree.setVisible(true);
         setVisible(false);
         SwingUtilities.invokeLater(() -> {
             NotTree.Node root = notTree.getRoot();

@@ -8,8 +8,11 @@ import buscaArvores.SearchResult.SearchResult;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.TreeSet;
 
 /**
@@ -28,7 +31,6 @@ public class NotTree {
         TreeSet<String> words;
         public String getValue;
         private String value;
-
 
         Node(String word) {
             this.word = word;
@@ -115,17 +117,28 @@ public class NotTree {
         }
     }
 
-    public void readTxt(List<String> wordsList) {
+    public int readTxt(List<String> wordsList) {
         int cont = 0;
+        Map<String, SearchResult> mapa = new HashMap<>();
+        List<SearchResult> listResult = new ArrayList<>();
         for (String word : wordsList) {
-            if (!word.isEmpty()) {  // Verifica se a palavra não está vazia
-                insert(word);
-                cont++;
+            if (!word.isEmpty()) {
+                SearchResult sr = searchAlphabetical(word);
+                if (sr.isSearch() == false) {
+                    insert(word);
+                    sr.setWord(word);
+                    sr.setOccurrences(1);
+                    mapa.put(word, sr);
+                    cont += sr.getComparisons();
+                } else{
+                    sr = mapa.get(word);
+                    sr.setOccurrences(sr.getOccurrences() + 1);
+                    mapa.put(word,sr);
+                    cont+= mapa.get(word).getComparisons();
+                }
             }
         }
-        System.out.println("Total de palavras inseridas na árvore: " + cont);
-        System.out.println("");
-
+        return cont;
     }
 
     public SearchResult searchAlphabetical(String word) {
@@ -140,11 +153,13 @@ public class NotTree {
         String nodeWord = node.word; // Pega a primeira palavra na lista do nó
 
         // Incrementa o contador de comparações
-        result = new SearchResult(result.getComparisons() + 1, result.getOccurrences());
+        result = new SearchResult(result.getComparisons() + 1, false);
 
         int comparisonResult = word.compareTo(nodeWord);
 
         if (comparisonResult == 0) {
+            // A palavra foi encontrada, incrementa o contador de ocorrências
+            result.setSearch(true);
             return result;
         }
 

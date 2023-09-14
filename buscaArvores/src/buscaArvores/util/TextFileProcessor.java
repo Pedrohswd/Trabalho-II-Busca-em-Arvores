@@ -21,16 +21,12 @@ public class TextFileProcessor {
     public static List<String> verification(String fileName) {
         Set<String> stopwords = loadStopwords("./src/buscaArvores/stopwords/stopwords.txt");
         List<String> wordsList = processTextFile(fileName, stopwords);
-
-//        for (String word : wordsList) {
-//            System.out.println(word);
-//        }
         return wordsList;
     }
 
     private static Set<String> loadStopwords(String stopwordsFile) {
         Set<String> stopwords = new HashSet<>();
-        try ( BufferedReader reader = new BufferedReader(new FileReader(stopwordsFile))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(stopwordsFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 stopwords.add(line.trim().toLowerCase());
@@ -43,7 +39,7 @@ public class TextFileProcessor {
 
     private static List<String> processTextFile(String fileName, Set<String> stopwords) {
         List<String> wordsList = new ArrayList<>();
-        try ( BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 // Remover pontuação e converter para minúsculas
@@ -66,24 +62,13 @@ public class TextFileProcessor {
         return wordsList;
     }
 
-    public static List<String> removerPalavrasRepetidas(List<String> listaPalavras) {
-        
-        HashSet<String> palavrasUnicas = new HashSet<>(listaPalavras);
-
-
-        List<String> listaSemRepeticao = new ArrayList<>(palavrasUnicas);
-
-        return listaSemRepeticao;
-    }
-
     public static String[] listToArray(List<String> list) {
         if (list == null) {
             return null;
         }
-        List<String> lista = removerPalavrasRepetidas(list);
-        String[] array = new String[lista.size()];
-        for (int i = 0; i < lista.size(); i++) {
-            array[i] = lista.get(i);
+        String[] array = new String[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            array[i] = list.get(i);
         }
         return array;
     }
