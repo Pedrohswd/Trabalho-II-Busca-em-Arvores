@@ -5,6 +5,7 @@
 package buscaArvores.structure;
 
 import buscaArvores.SearchResult.SearchResult;
+import buscaArvores.util.QuickSort;
 import java.util.List;
 
 /**
@@ -13,43 +14,27 @@ import java.util.List;
  */
 public class Binary {
 
-    public static SearchResult binarySearchCount(String[] sortedArray) {
+    public static SearchResult search(String[] arr, String word) {
+        int comparisons = 0;
         int left = 0;
-        int right = sortedArray.length - 1;
-        int comparisons = 0; // Inicializa o contador de comparações
-        int occurrences = 0; // Inicializa o contador de ocorrências
-        for (String key : sortedArray) {
-            
-            while (left <= right) {
-                int mid = left + (right - left) / 2;
-                int comparisonResult = key.compareTo(sortedArray[mid]);
-                comparisons++; // Incrementa o contador de comparações
+        int right = arr.length - 1;
+        boolean found = false;
 
-                if (comparisonResult == 0) {
-                    occurrences++; // Incrementa o contador de ocorrências
-                    // Continue a busca binária para verificar mais ocorrências
-                    int leftIndex = mid - 1;
-                    int rightIndex = mid + 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            comparisons++;
+            int result = word.compareTo(arr[mid]);
 
-                    while (leftIndex >= 0 && sortedArray[leftIndex].equals(key)) {
-                        occurrences++;
-                        leftIndex--;
-                    }
-
-                    while (rightIndex < sortedArray.length && sortedArray[rightIndex].equals(key)) {
-                        occurrences++;
-                        rightIndex++;
-                    }
-
-                    return new SearchResult(comparisons, occurrences); // Retorna o resultado
-                } else if (comparisonResult < 0) {
-                    right = mid - 1; // A chave está à esquerda
-                } else {
-                    left = mid + 1; // A chave está à direita
-                }
+            if (result == 0) {
+                found = true;
+                break;
+            } else if (result < 0) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
             }
         }
 
-        return new SearchResult(comparisons, occurrences); // Retorna o resultado (0 ocorrências)
+        return new SearchResult(comparisons, found);
     }
 }

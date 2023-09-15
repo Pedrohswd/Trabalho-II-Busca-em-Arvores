@@ -4,13 +4,17 @@
  */
 package buscaArvores.util;
 
+import buscaArvores.SearchResult.SearchResult;
+import buscaArvores.structure.Binary;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -62,15 +66,49 @@ public class TextFileProcessor {
         return wordsList;
     }
 
-    public static String[] listToArray(List<String> list) {
+    public int listToArray(List<String> list) {
         if (list == null) {
-            return null;
+            return 0;
         }
-        String[] array = new String[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            array[i] = list.get(i);
+        String[] dynamicArray = new String[1];
+        Map<String, SearchResult> mapa = new HashMap<>();
+        int size = 0;
+        int cont = 0;
+
+        // Adicionar elementos ao vetor
+        for (String word : list) {
+
+            SearchResult sr = null;
+            String teste = dynamicArray[0];
+            if (teste == null) {
+                sr = new SearchResult(1, false);
+            } else {
+                QuickSort.quickSort(dynamicArray);
+                sr = Binary.search(dynamicArray, word);
+            }
+
+            if (sr.isSearch() == false) {
+                if (size == dynamicArray.length) {
+                    String[] newDynamicArray = new String[dynamicArray.length * 1]; // Dobrar o tamanho
+                    System.arraycopy(dynamicArray, 0, newDynamicArray, 0, size);
+                    dynamicArray = newDynamicArray;
+                }
+                dynamicArray[size] = word;
+                sr.setWord(word);
+                sr.setOccurrences(1);
+                mapa.put(word, sr);
+                cont += sr.getComparisons();
+                size++;
+            } else {
+                sr = mapa.get(word);
+                sr.setOccurrences(sr.getOccurrences() + 1);
+                mapa.put(word, sr);
+                cont += mapa.get(word).getComparisons();
+            }
+
         }
-        return array;
+        return cont;
+
     }
 
 }

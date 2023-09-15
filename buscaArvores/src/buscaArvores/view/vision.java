@@ -226,36 +226,13 @@ public class vision extends javax.swing.JFrame {
         List<String> wordList = tFProcessor.verification(jTextField1.getText());
 
         //binária
-        //String[] array = tFProcessor.listToArray(wordList);
-        //QuickSort quickSort = new QuickSort();
-        //Binary binary = new Binary();
         long ti, tf;
         long ni, nf;
         double tt, nt;
         long comparacoes = 0;
-        //Set<String> foundWords = new HashSet<>();
         ti = System.nanoTime();
         ni = System.nanoTime();
-//      quickSort.quickSort(array);
-//        for (String word : wordList) {
-//            if (!foundWords.contains(word)) {
-//                SearchResult searchResult = binary.binarySearchCount(array, word);
-//                comparacoes += searchResult.getComparisons();
-//                searchResult.setWord(word);
-//                searchResult.setOccurrences(1);
-//                searchResults.add(searchResult);
-//                foundWords.add(word);
-//            } else {
-//                Iterator<SearchResult> iterator = searchResults.iterator();
-//                while (iterator.hasNext()) {
-//                    SearchResult elemento = iterator.next();
-//                    String compare = elemento.getWord();
-//                    if (compare.equals(word)) {
-//                        elemento.setOccurrences(elemento.getOccurrences() + 1);
-//                    }
-//                }
-//            }
-//        }
+        comparacoes = tFProcessor.listToArray(wordList);
         tf = System.nanoTime();
         nf = System.nanoTime();
         tt = (tf - ti) / 1000000000.0;
@@ -273,9 +250,7 @@ public class vision extends javax.swing.JFrame {
 
         //arvore sem balanceamento
         System.out.println("ARVORE SEM BALANCEAMENTO");
-        //notTree.print();
         comparacoes = 0;
-        //foundWords = new HashSet<>();
         ti = System.nanoTime();
         ni = System.nanoTime();
         comparacoes = notTree.readTxt(wordList);
@@ -297,7 +272,6 @@ public class vision extends javax.swing.JFrame {
 
         //arvore AVL
         comparacoes = 0;
-        //foundWords = new HashSet<>();
         ti = System.nanoTime();
         ni = System.nanoTime();
         comparacoes = tree.readTxt(wordList);

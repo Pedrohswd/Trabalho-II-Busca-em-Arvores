@@ -45,6 +45,10 @@ public class SearchResult {
         return comparisons;
     }
 
+    public void setComparisons(int comparisons) {
+        this.comparisons = comparisons;
+    }
+
     public int getOccurrences() {
         return occurrences;
     }
