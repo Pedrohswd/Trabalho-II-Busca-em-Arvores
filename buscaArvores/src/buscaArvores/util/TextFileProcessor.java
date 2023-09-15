@@ -30,7 +30,7 @@ public class TextFileProcessor {
 
     private static Set<String> loadStopwords(String stopwordsFile) {
         Set<String> stopwords = new HashSet<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(stopwordsFile))) {
+        try ( BufferedReader reader = new BufferedReader(new FileReader(stopwordsFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 stopwords.add(line.trim().toLowerCase());
@@ -43,7 +43,7 @@ public class TextFileProcessor {
 
     private static List<String> processTextFile(String fileName, Set<String> stopwords) {
         List<String> wordsList = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+        try ( BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 // Remover pontuação e converter para minúsculas
@@ -70,6 +70,8 @@ public class TextFileProcessor {
         if (list == null) {
             return 0;
         }
+        int tamanho = list.size();
+        int tamanhoCorrido = 0;
         String[] dynamicArray = new String[1];
         Map<String, SearchResult> mapa = new HashMap<>();
         int size = 0;
@@ -83,13 +85,13 @@ public class TextFileProcessor {
             if (teste == null) {
                 sr = new SearchResult(1, false);
             } else {
-                QuickSort.quickSort(dynamicArray);
+                QuickSort.insertionSort(dynamicArray);
                 sr = Binary.search(dynamicArray, word);
             }
 
             if (sr.isSearch() == false) {
                 if (size == dynamicArray.length) {
-                    String[] newDynamicArray = new String[dynamicArray.length * 1]; // Dobrar o tamanho
+                    String[] newDynamicArray = new String[dynamicArray.length + 1];
                     System.arraycopy(dynamicArray, 0, newDynamicArray, 0, size);
                     dynamicArray = newDynamicArray;
                 }
@@ -105,8 +107,10 @@ public class TextFileProcessor {
                 mapa.put(word, sr);
                 cont += mapa.get(word).getComparisons();
             }
-
+            tamanhoCorrido++;
+            System.out.println(tamanhoCorrido + "|" + tamanho);
         }
+
         return cont;
 
     }

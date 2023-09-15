@@ -13,6 +13,7 @@ import buscaArvores.structure.TreePanel;
 import buscaArvores.util.QuickSort;
 import buscaArvores.util.TextFileProcessor;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -216,7 +217,7 @@ public class vision extends javax.swing.JFrame {
     private void jButtonGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGenerateActionPerformed
         jTextArea2.setText("");
         //Comparator<SearchResult> comparator = (result1, result2) -> result1.getWord().compareToIgnoreCase(result2.getWord());
-        Set<SearchResult> searchResults = new HashSet<>();
+        List<SearchResult> searchResults = new ArrayList<>();
         TextFileProcessor tFProcessor = new TextFileProcessor();
         String caminho = jTextField1.getText();
         if ("null".equals(caminho) || jTextField1.getText().isEmpty()) {
@@ -288,6 +289,7 @@ public class vision extends javax.swing.JFrame {
                 + " Nanosegundos: " + milisegundosFormatados);
         DefaultTableModel model = (DefaultTableModel) jTableOcorrencias.getModel();
         jTextArea2.setText(saida);
+        searchResults = tree.resultText();
         model.setRowCount(0);
         for (SearchResult sr : searchResults) {
             model.addRow(new Object[]{

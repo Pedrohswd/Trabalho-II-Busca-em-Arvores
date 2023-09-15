@@ -48,4 +48,20 @@ public class QuickSort {
         arr[j] = temp;
     }
 
+    public static void insertionSort(String[] arr) {
+        int n = arr.length;
+        for (int i = 1; i < n; i++) {
+            String chave = arr[i];
+            int j = i - 1;
+
+            // Move os elementos do arr[0..i-1] que são maiores que a chave
+            // para uma posição à frente de sua posição atual
+            while (j >= 0 && arr[j].compareTo(chave) > 0) {
+                arr[j + 1] = arr[j];
+                j = j - 1;
+            }
+
+            arr[j + 1] = chave;
+        }
+    }
 }

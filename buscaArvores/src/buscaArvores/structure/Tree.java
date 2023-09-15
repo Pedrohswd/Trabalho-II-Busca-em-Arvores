@@ -22,9 +22,12 @@ import java.util.TreeSet;
  * @author pedro
  */
 public class Tree {
-    
+
+    List<SearchResult> listResult = new ArrayList<>();
+    Map<String, SearchResult> mapa = new HashMap<>();
+
     public class Node {
-        
+
         String word;
         int height;
         Node left;
@@ -32,27 +35,27 @@ public class Tree {
         TreeSet<String> words;
         public String getValue;
         private String value;
-        
+
         Node(String word) {
             this.word = word;
         }
     }
-    
+
     private Node root;
-    
+
     public void insert(String word) {
         root = insert(root, word);
-        
+
     }
-    
+
     public Node getRoot() {
         return root;
     }
-    
+
     public int height() {
         return root == null ? -1 : root.height;
     }
-    
+
     private Node insert(Node node, String word) {
         TreeSet<String> words = new TreeSet<>();
         if (node == null) {
@@ -70,7 +73,7 @@ public class Tree {
         }
         return rebalance(node);
     }
-    
+
     private Node rebalance(Node z) {
         updateHeight(z);
         int balance = getBalance(z);
@@ -91,7 +94,7 @@ public class Tree {
         }
         return z;
     }
-    
+
     private Node rotateRight(Node y) {
         Node x = y.left;
         Node z = x.right;
@@ -101,7 +104,7 @@ public class Tree {
         updateHeight(x);
         return x;
     }
-    
+
     private Node rotateLeft(Node y) {
         Node x = y.right;
         Node z = x.left;
@@ -111,19 +114,19 @@ public class Tree {
         updateHeight(x);
         return x;
     }
-    
+
     private void updateHeight(Node n) {
         n.height = 1 + Math.max(height(n.left), height(n.right));
     }
-    
+
     private int height(Node n) {
         return n == null ? -1 : n.height;
     }
-    
+
     public int getBalance(Node n) {
         return (n == null) ? 0 : height(n.right) - height(n.left);
     }
-    
+
     public void printDictionary(Node node) {
         if (node != null) {
             printDictionary(node.left);
@@ -132,11 +135,11 @@ public class Tree {
             printDictionary(node.right);
         }
     }
-    
+
     public void print() {
         printDictionary(root);
     }
-    
+
     public void verifica(String caminho) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(caminho));
@@ -158,11 +161,10 @@ public class Tree {
             e.printStackTrace();
         }
     }
-    
+
     public int readTxt(List<String> wordsList) {
         int cont = 0;
-        List<SearchResult> listResult = new ArrayList<>();
-        Map<String, SearchResult> mapa = new HashMap<>();
+
         for (String word : wordsList) {
             if (!word.isEmpty()) {
                 SearchResult sr = searchAlphabetical(word);
@@ -172,40 +174,45 @@ public class Tree {
                     sr.setOccurrences(1);
                     mapa.put(word, sr);
                     cont += sr.getComparisons();
-                } else{
+                } else {
                     sr = mapa.get(word);
                     sr.setOccurrences(sr.getOccurrences() + 1);
-                    mapa.put(word,sr);
-                    cont+= mapa.get(word).getComparisons();
+                    mapa.put(word, sr);
+                    cont += mapa.get(word).getComparisons();
                 }
             }
         }
-        
+
         return cont;
     }
-    
+
+    public List<SearchResult> resultText() {
+        listResult = new ArrayList<>(mapa.values());
+        return listResult;
+    }
+
     public SearchResult searchAlphabetical(String word) {
         return searchAlphabetical(root, word, new SearchResult(0, 0));
     }
-    
+
     private SearchResult searchAlphabetical(Tree.Node node, String word, SearchResult result) {
         if (node == null) {
             return result; // A palavra não foi encontrada, retorna o resultado atual
         }
-        
+
         String nodeWord = node.word; // Pega a primeira palavra na lista do nó
 
         // Incrementa o contador de comparações
         result = new SearchResult(result.getComparisons() + 1, false);
-        
+
         int comparisonResult = word.compareTo(nodeWord);
-        
+
         if (comparisonResult == 0) {
             // A palavra foi encontrada, incrementa o contador de ocorrências
             result.setSearch(true);
             return result;
         }
-        
+
         if (comparisonResult < 0) {
             return searchAlphabetical(node.left, word, result); // Busca na subárvore esquerda
         } else {
