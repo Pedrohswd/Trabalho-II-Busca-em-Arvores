@@ -5,9 +5,11 @@
 package buscaArvores.view;
 
 import buscaArvores.SearchResult.SearchResult;
+import buscaArvores.structure.BTree;
 import buscaArvores.structure.Binary;
 import buscaArvores.structure.NotTree;
 import buscaArvores.structure.NotTreePanel;
+import buscaArvores.structure.RedBlackTree;
 import buscaArvores.structure.Tree;
 import buscaArvores.structure.TreePanel;
 import buscaArvores.util.QuickSort;
@@ -36,6 +38,8 @@ public class vision extends javax.swing.JFrame {
 
     Tree tree = new Tree();
     NotTree notTree = new NotTree();
+    RedBlackTree rbTree = new RedBlackTree();
+    //BTree bTree = new BTree(0);
 
     /**
      * Creates new form vision
@@ -287,16 +291,29 @@ public class vision extends javax.swing.JFrame {
                 + " Comparações: " + comparacoes + "\n"
                 + " Segundos: " + segundosFormatados + "\n"
                 + " Nanosegundos: " + milisegundosFormatados);
-        DefaultTableModel model = (DefaultTableModel) jTableOcorrencias.getModel();
-        jTextArea2.setText(saida);
-        searchResults = tree.resultText();
-        model.setRowCount(0);
-        for (SearchResult sr : searchResults) {
-            model.addRow(new Object[]{
-                sr.getWord(),
-                sr.getOccurrences()
-            });
-        }
+
+        ti = 0;
+        ni = 0;
+        tf = 0;
+        nf = 0;
+        //arvore RB
+        comparacoes = 0;
+        ti = System.nanoTime();
+        ni = System.nanoTime();
+        comparacoes = rbTree.readTxt(wordList);
+        System.out.println("COMPARAÇÕES: " + comparacoes);
+        tf = System.nanoTime();
+        nf = System.nanoTime();
+        tt = (tf - ti) / 1000000000.0;
+        nt = nf - ni;
+        segundosFormatados = String.format("%.8f", tt);
+        milisegundosFormatados = String.format("%.2f", nt);
+        saida += ("\n\nBusca Arvore Rubro-Negra\n"
+                + " Comparações: " + comparacoes + "\n"
+                + " Segundos: " + segundosFormatados + "\n"
+                + " Nanosegundos: " + milisegundosFormatados);
+        
+
     }//GEN-LAST:event_jButtonGenerateActionPerformed
 
     private void jTableOcorrenciasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableOcorrenciasMouseClicked
