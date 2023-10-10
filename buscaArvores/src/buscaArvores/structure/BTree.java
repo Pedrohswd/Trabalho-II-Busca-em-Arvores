@@ -4,25 +4,31 @@
  */
 package buscaArvores.structure;
 
+import buscaArvores.SearchResult.SearchResult;
 import java.util.ArrayList;
-
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BTree {
+
     private TreeNode root;
     private int t; // Ordem da árvore B
 
     class TreeNode {
-    ArrayList<String> keys;
-    ArrayList<TreeNode> childPointers;
-    boolean isLeaf;
 
-    public TreeNode(boolean isLeaf) {
-        this.isLeaf = isLeaf;
-        keys = new ArrayList<>();
-        childPointers = new ArrayList<>();
+        ArrayList<String> keys;
+        ArrayList<TreeNode> childPointers;
+        boolean isLeaf;
+
+        public TreeNode(boolean isLeaf) {
+            this.isLeaf = isLeaf;
+            keys = new ArrayList<>();
+            childPointers = new ArrayList<>();
+        }
     }
-}
+    Map<String, SearchResult> mapa = new HashMap<>();
+
     public BTree(int t) {
         this.t = t;
         root = new TreeNode(true);
@@ -118,8 +124,7 @@ public class BTree {
             // Caso 1: A chave está na folha
             if (node.isLeaf) {
                 node.keys.remove(i);
-            }
-            // Caso 2: A chave está em um nó interno
+            } // Caso 2: A chave está em um nó interno
             else {
                 // Substitua a chave a ser excluída pela chave predecessora/sucessora
                 // e exclua a chave predecessora/sucessora do nó filho apropriado
@@ -216,25 +221,58 @@ public class BTree {
         }
     }
 
+    public int readTxt(List<String> wordsList) {
+        int cont = 0;
+
+        for (String word : wordsList) {
+            if (!word.isEmpty()) {
+                SearchResult sr = searchAlphabetical(word);
+                if (sr.isSearch() == false) {
+                    insert(word);
+                    sr.setWord(word);
+                    sr.setOccurrences(1);
+                    mapa.put(word, sr);
+                    cont += sr.getComparisons();
+                } else {
+                    sr = mapa.get(word);
+                    sr.setOccurrences(sr.getOccurrences() + 1);
+                    mapa.put(word, sr);
+                    cont += mapa.get(word).getComparisons();
+                }
+            }
+        }
+
+        return cont;
+    }
+
+    public SearchResult searchAlphabetical(String word) {
+        return searchAlphabetical(root, word, new SearchResult(0, 0));
+    }
+
+    private SearchResult searchAlphabetical(BTree.TreeNode node, String word, SearchResult result) {
+        if (node == null) {
+            return result;
+        }
+        result = new SearchResult(result.getComparisons() + 1, false);
+        
+
+        int i = 0;
+        while (i < node.keys.size() && word.compareTo(node.keys.get(i)) > 0) {
+            i++;
+        }
+
+        if (i < node.keys.size() && word.equals(node.keys.get(i))) {
+            result.setSearch(true);
+            return result;
+        } else if (node.childPointers != null && i < node.childPointers.size()) {
+            return searchAlphabetical(node.childPointers.get(i), word, result);
+        } else {
+            return result;
+        }
+    }
+
     public void printTree() {
         printTree(root, "", true);
     }
 
-    public static void main(String[] args) {
-        BTree bTree = new BTree(4); // Ordem da árvore B igual a 3
-
-        String[] keys = {"apple", "banana", "cherry", "date", "fig", "grape", "kiwi", "lemon", "mango", "orange", "pear", "quince", "strawberry", "tomato", "watermelon"};
-        for (String key : keys) {
-            bTree.insert(key);
-        }
-
-        bTree.delete("date");
-        bTree.delete("banana");
-
-        System.out.println("Search 'date': " + bTree.search("fig"));
-        System.out.println("Search 'banana': " + bTree.search("grape"));
-
-        bTree.printTree();
-    }
 }
-
