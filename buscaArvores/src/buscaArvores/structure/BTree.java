@@ -6,7 +6,13 @@ package buscaArvores.structure;
 
 import java.util.ArrayList;
 
-class TreeNode {
+
+
+public class BTree {
+    private TreeNode root;
+    private int t; // Ordem da árvore B
+
+    class TreeNode {
     ArrayList<String> keys;
     ArrayList<TreeNode> childPointers;
     boolean isLeaf;
@@ -17,11 +23,6 @@ class TreeNode {
         childPointers = new ArrayList<>();
     }
 }
-
-public class BTree {
-    private TreeNode root;
-    private int t; // Ordem da árvore B
-
     public BTree(int t) {
         this.t = t;
         root = new TreeNode(true);

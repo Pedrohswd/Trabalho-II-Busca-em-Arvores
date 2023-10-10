@@ -4,6 +4,7 @@
  */
 package buscaArvores.structure;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import javax.swing.JPanel;
@@ -34,7 +35,7 @@ public class RedBlackTreePanel extends JPanel {
         drawTree(g, startX, startY, panelWidth / 4, fontSize, key); // Dividindo a largura por 4 para ajustar o espaçamento
     }
 
-    private void drawTree(Graphics g, int startX, int startY, int i, int fontSize, RedBlackTree.Node key) {
+    private void drawTree(Graphics g, int x, int y, int width, int fontSize, RedBlackTree.Node key) {
         if (key == null) {
             return;
         }
@@ -42,9 +43,9 @@ public class RedBlackTreePanel extends JPanel {
         int circleSize = 30;
 
         // Desenhe o nó atual
-        //g.drawOval(x - circleSize / 2, y - circleSize / 2, circleSize, circleSize);
+        g.drawOval(x - circleSize / 2, y - circleSize / 2, circleSize, circleSize);
         g.setFont(new Font("Arial", Font.PLAIN, fontSize));
-        //g.drawString(node.word, x - circleSize / 2 + 15, y - circleSize / 2 + 15);
+        g.drawString(key.key, x - circleSize / 2 + 15, y - circleSize / 2 + 15);
 
         // Calcule as coordenadas para os filhos
         int yOffset = 60; // Espaçamento vertical entre os níveis da árvore
@@ -54,16 +55,30 @@ public class RedBlackTreePanel extends JPanel {
             i++;
             fontSize -= 1; // Valor de redução de tamanho da fonte
         }
+
         // Desenhe as conexões e nós da esquerda e direita
         if (key.left != null) {
-            //int childWidth = width / 2;
-            //g.drawLine(x, y, x - childWidth, y + yOffset);
-            //drawTree(g, x - childWidth, y + yOffset, childWidth, fontSize, node.left);
+            int childWidth = width / 2;
+            int cor = key.color;
+            if (cor == 1) {
+                g.setColor(Color.red);
+            } else {
+                g.setColor(Color.black);
+            }
+            g.drawLine(x, y, x - childWidth, y + yOffset);
+            drawTree(g, x - childWidth, y + yOffset, childWidth, fontSize, key.left);
+
         }
         if (key.right != null) {
-            //int childWidth = width / 2;
-            //g.drawLine(x, y, x + childWidth, y + yOffset);
-            //drawTree(g, x + childWidth, y + yOffset, childWidth, fontSize, node.right);
+            int childWidth = width / 2;
+            int cor = key.color;
+            if (cor == 1) {
+                g.setColor(Color.red);
+            } else {
+                g.setColor(Color.black);
+            }
+            g.drawLine(x, y, x + childWidth, y + yOffset);
+            drawTree(g, x + childWidth, y + yOffset, childWidth, fontSize, key.right);
 
         }
     }
