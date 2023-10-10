@@ -72,8 +72,9 @@ public class RedBlackTree {
 
         if (key.compareTo(node.key) < 0) {
             return searchTreeHelper(node.left, key);
+        } else{
+            return searchTreeHelper(node.right, key);
         }
-        return searchTreeHelper(node.right, key);
     }
 
     // Encontra o nó mínimo
@@ -425,8 +426,11 @@ public class RedBlackTree {
     }
 
     // Busca
-    public Node searchTree(String k) {
-        return searchTreeHelper(this.root, k);
+     public boolean searchTree(String k) {
+        if (searchTreeHelper(this.root, k).key.compareTo(k) == 0){
+            return true;
+        }
+        return false;
     }
 
     // Preorder
@@ -473,37 +477,4 @@ public class RedBlackTree {
         }
     }
 
-    public static void main(String[] args) {
-        RedBlackTree tree = new RedBlackTree();
-
-        String[] letras = {"Apple", "Banana", "Carrot", "Dolphin", "Elephant", "Frog", "Giraffe",
-            "Horse", "Iguana", "Jaguar", "Kangaroo", "Lion", "Monkey", "Nest", "Orange",
-            "Penguin", "Quokka", "Raccoon", "Snake", "Tiger", "Umbrella", "Vulture",
-            "Whale", "Xylophone", "Yak", "Zebra"};
-
-        for (String letra : letras) {
-            tree.insert(letra);
-        }
-
-        System.out.println("Árvore Rubro-Negra após inserções:");
-        tree.printRedBlackTree(tree.root, "", true);
-
-        System.out.println("\nRemovendo nó com chave 'A':");
-        tree.delete("A");
-        tree.printRedBlackTree(tree.root, "", true);
-
-        System.out.println("\nBuscando nó com chave 'C':");
-        Node result = tree.searchTree("C");
-        System.out.println(result != null ? "Chave encontrada!" : "Chave não encontrada.");
-
-        System.out.println("\nNó Mínimo:");
-        System.out.println(tree.findMin().key);
-
-        System.out.println("\nNó Máximo:");
-        System.out.println(tree.findMax().key);
-    }
-
-    /**
-     * @param args the command line arguments
-     */
 }

@@ -4,36 +4,27 @@
  */
 package buscaArvores.structure;
 
-import buscaArvores.SearchResult.SearchResult;
-import java.util.Enumeration;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+class TreeNode {
+    ArrayList<String> keys;
+    ArrayList<TreeNode> childPointers;
+    boolean isLeaf;
+
+    public TreeNode(boolean isLeaf) {
+        this.isLeaf = isLeaf;
+        keys = new ArrayList<>();
+        childPointers = new ArrayList<>();
+    }
+}
 
 public class BTree {
-
-    class TreeNode {
-
-        ArrayList<String> keys;
-        ArrayList<TreeNode> childPointers;
-        boolean isLeaf;
-
-        public TreeNode(boolean isLeaf) {
-            this.isLeaf = isLeaf;
-            keys = new ArrayList<>();
-            childPointers = new ArrayList<>();
-        }
-    }
-
     private TreeNode root;
     private int t; // Ordem da árvore B
-    List<SearchResult> listResult = new ArrayList<>();
-    Map<String, SearchResult> mapa = new HashMap<>();
 
     public BTree(int t) {
         this.t = t;
+        root = new TreeNode(true);
         root.keys.add(""); // Inicializa com uma chave fictícia (vazia)
     }
 
@@ -126,7 +117,8 @@ public class BTree {
             // Caso 1: A chave está na folha
             if (node.isLeaf) {
                 node.keys.remove(i);
-            } // Caso 2: A chave está em um nó interno
+            }
+            // Caso 2: A chave está em um nó interno
             else {
                 // Substitua a chave a ser excluída pela chave predecessora/sucessora
                 // e exclua a chave predecessora/sucessora do nó filho apropriado
@@ -210,63 +202,7 @@ public class BTree {
         }
         node.childPointers.remove(index + 1);
     }
-public List<SearchResult> resultText() {
-        listResult = new ArrayList<>(mapa.values());
-        return listResult;
-    }
 
-    public SearchResult searchAlphabetical(String word) {
-        return searchAlphabetical(root, word, new SearchResult(0, 0));
-    }
-
-    private SearchResult searchAlphabetical(RedBlackTree.Node node, String word, SearchResult result) {
-        if (node == null) {
-            return result; // A palavra não foi encontrada, retorna o resultado atual
-        }
-
-        String nodeWord = node.key; // Pega a primeira palavra na lista do nó
-
-        // Incrementa o contador de comparações
-        result = new SearchResult(result.getComparisons() + 1, false);
-
-        int comparisonResult = word.compareTo(nodeWord);
-
-        if (comparisonResult == 0) {
-            // A palavra foi encontrada, incrementa o contador de ocorrências
-            result.setSearch(true);
-            return result;
-        }
-
-        if (comparisonResult < 0) {
-            return searchAlphabetical(node.left, word, result); // Busca na subárvore esquerda
-        } else {
-            return searchAlphabetical(node.right, word, result); // Busca na subárvore direita
-        }
-    }
-
-    public int readTxt(List<String> wordsList) {
-        int cont = 0;
-
-        for (String word : wordsList) {
-            if (!word.isEmpty()) {
-                SearchResult sr = searchAlphabetical(word);
-                if (sr.isSearch() == false) {
-                    insert(word);
-                    sr.setWord(word);
-                    sr.setOccurrences(1);
-                    mapa.put(word, sr);
-                    cont += sr.getComparisons();
-                } else {
-                    sr = mapa.get(word);
-                    sr.setOccurrences(sr.getOccurrences() + 1);
-                    mapa.put(word, sr);
-                    cont += mapa.get(word).getComparisons();
-                }
-            }
-        }
-
-        return cont;
-    }
     public void printTree(TreeNode node, String prefix, boolean isLeft) {
         if (node != null) {
             System.out.println(prefix + (isLeft ? "├── " : "└── ") + node.keys);
@@ -300,3 +236,4 @@ public List<SearchResult> resultText() {
         bTree.printTree();
     }
 }
+
