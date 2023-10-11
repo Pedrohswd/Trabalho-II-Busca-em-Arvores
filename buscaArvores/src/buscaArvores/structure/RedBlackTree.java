@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class RedBlackTree {
 
-    class Node {
+    public class Node {
 
         String key;
         Node parent;
@@ -30,6 +30,9 @@ public class RedBlackTree {
     List<SearchResult> listResult = new ArrayList<>();
     Map<String, SearchResult> mapa = new HashMap<>();
 
+    public Node getRoot() {
+        return root;
+    }
     // Inicializa a árvore com um nó nulo.
     public RedBlackTree() {
         TNULL = new Node("");
@@ -69,7 +72,7 @@ public class RedBlackTree {
         if (node == TNULL || key.equals(node.key)) {
             return node;
         }
-
+        
         if (key.compareTo(node.key) < 0) {
             return searchTreeHelper(node.left, key);
         } else{
@@ -143,6 +146,7 @@ public class RedBlackTree {
         }
         root.color = 0;
     }
+    
     public List<SearchResult> resultText() {
         listResult = new ArrayList<>(mapa.values());
         return listResult;

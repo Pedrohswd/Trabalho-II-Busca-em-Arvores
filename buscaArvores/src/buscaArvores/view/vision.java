@@ -10,6 +10,7 @@ import buscaArvores.structure.Binary;
 import buscaArvores.structure.NotTree;
 import buscaArvores.structure.NotTreePanel;
 import buscaArvores.structure.RedBlackTree;
+import buscaArvores.structure.RedBlackTreePanel;
 import buscaArvores.structure.Tree;
 import buscaArvores.structure.TreePanel;
 import buscaArvores.util.QuickSort;
@@ -417,11 +418,11 @@ public class vision extends javax.swing.JFrame {
         // TODO add your handling code here:
         setVisible(false);
         SwingUtilities.invokeLater(() -> {
-            NotTree.Node root = notTree.getRoot();
-            NotTreePanel nottreePanel = new NotTreePanel(root);
+            RedBlackTree.Node key = rbTree.getRoot();
+            RedBlackTreePanel RbtreePanel = new RedBlackTreePanel(key);
             JFrame frame = new JFrame("Árvore Rubro-Negra");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.add(nottreePanel);
+            frame.add(RbtreePanel);
             frame.setSize(1920, 1080);
             frame.setVisible(true);
             frame.setLocationRelativeTo(null);

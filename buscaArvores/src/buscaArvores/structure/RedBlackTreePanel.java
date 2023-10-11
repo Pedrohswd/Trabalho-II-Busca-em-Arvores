@@ -30,7 +30,7 @@ public class RedBlackTreePanel extends JPanel {
         int startY = 30;
 
         int fontSize = 14; // Tamanho da fonte inicial
-        g.setFont(new Font("Arial", Font.PLAIN, fontSize)); // Define a fonte inicial
+        g.setFont(new Font("Arial", Font.BOLD, fontSize)); // Define a fonte inicial
 
         drawTree(g, startX, startY, panelWidth / 4, fontSize, key); // Dividindo a largura por 4 para ajustar o espaçamento
     }
@@ -43,8 +43,15 @@ public class RedBlackTreePanel extends JPanel {
         int circleSize = 30;
 
         // Desenhe o nó atual
+        int cor = key.color;
+        if (cor == 1) {
+            g.setColor(Color.red);
+        } else {
+            g.setColor(Color.black);
+        }
         g.drawOval(x - circleSize / 2, y - circleSize / 2, circleSize, circleSize);
-        g.setFont(new Font("Arial", Font.PLAIN, fontSize));
+        g.setColor(Color.black);
+        g.setFont(new Font("Arial", Font.BOLD, fontSize));
         g.drawString(key.key, x - circleSize / 2 + 15, y - circleSize / 2 + 15);
 
         // Calcule as coordenadas para os filhos
@@ -59,24 +66,13 @@ public class RedBlackTreePanel extends JPanel {
         // Desenhe as conexões e nós da esquerda e direita
         if (key.left != null) {
             int childWidth = width / 2;
-            int cor = key.color;
-            if (cor == 1) {
-                g.setColor(Color.red);
-            } else {
-                g.setColor(Color.black);
-            }
+
             g.drawLine(x, y, x - childWidth, y + yOffset);
             drawTree(g, x - childWidth, y + yOffset, childWidth, fontSize, key.left);
 
         }
         if (key.right != null) {
             int childWidth = width / 2;
-            int cor = key.color;
-            if (cor == 1) {
-                g.setColor(Color.red);
-            } else {
-                g.setColor(Color.black);
-            }
             g.drawLine(x, y, x + childWidth, y + yOffset);
             drawTree(g, x + childWidth, y + yOffset, childWidth, fontSize, key.right);
 
